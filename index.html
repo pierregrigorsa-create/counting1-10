@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)file:///C:/Users/pierr/Downloads/Counting%20with%20Miss%20Numby!.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Counting with Miss Numby!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
+
+body{
+  background:linear-gradient(170deg,#1A237E 0%,#311B92 15%,#6A1B9A 30%,#00838F 50%,#00ACC1 70%,#26C6DA 85%,#80DEEA 100%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 8px 30px;position:relative;
+}
+
+/* ── FLOATING DECORATIONS ── */
+.float-deco{position:fixed;pointer-events:none;opacity:0.1;font-size:clamp(28px,6vw,55px);z-index:0;animation:floatAround 18s ease-in-out infinite}
+@keyframes floatAround{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-20px) rotate(8deg)}50%{transform:translateY(5px) rotate(-5deg)}75%{transform:translateY(-12px) rotate(3deg)}}
+
+/* ── PASSWORD SCREEN ── */
+#passwordScreen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(170deg,#1A237E 0%,#311B92 15%,#6A1B9A 30%,#00838F 50%,#00ACC1 70%,#26C6DA 85%,#80DEEA 100%);
+  display:flex;align-items:center;justify-content:center;z-index:9999;
+}
+.pw-card{background:rgba(255,255,255,0.97);border-radius:24px;padding:36px 28px;max-width:380px;width:90%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.2)}
+.pw-card h2{font-family:'Fredoka One',cursive;color:#E65100;font-size:22px;margin-bottom:6px}
+.pw-card p{font-weight:700;color:#5D4037;font-size:14px;margin-bottom:18px}
+.pw-input{width:80%;padding:14px;border:3px solid #FFA726;border-radius:14px;font-family:'Fredoka One',cursive;font-size:22px;text-align:center;color:#E65100;outline:none;transition:border-color 0.3s}
+.pw-input:focus{border-color:#FF6F00}
+.pw-btn{display:block;margin:16px auto 0;padding:12px 40px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:18px;color:white;cursor:pointer;background:linear-gradient(135deg,#43A047,#66BB6A);box-shadow:0 4px 16px rgba(67,160,71,0.4);transition:transform 0.2s}
+.pw-btn:hover{transform:scale(1.05)}
+.pw-error{color:#E53935;font-weight:800;font-size:13px;margin-top:10px;min-height:20px}
+
+/* ── MAIN CONTAINER ── */
+#app{width:100%;max-width:700px;position:relative;z-index:1;display:none}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#FF8F00,#FFB300);border-radius:20px;padding:14px 20px;margin-bottom:14px;text-align:center;box-shadow:0 6px 28px rgba(255,143,0,0.4)}
+.header h1{font-family:'Fredoka One',cursive;font-size:clamp(16px,3.5vw,24px);color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.2)}
+.header p{font-size:clamp(11px,2vw,14px);color:#FFF8E1;font-weight:700;margin-top:4px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{height:10px;background:rgba(255,255,255,0.3);border-radius:50px;margin:10px 0 14px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#FF8F00,#66BB6A);border-radius:50px;transition:width 0.8s ease;width:0%}
+
+/* ── PAUSE BUTTON ── */
+#pauseBtn{
+  position:fixed;bottom:20px;right:20px;z-index:1000;
+  width:60px;height:60px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#E65100,#FF8F00);
+  color:white;font-size:24px;cursor:pointer;
+  box-shadow:0 6px 24px rgba(230,81,0,0.5);
+  transition:transform 0.2s;
+  display:none;
+}
+#pauseBtn:hover{transform:scale(1.1)}
+#pauseBtn.paused{background:linear-gradient(135deg,#2E7D32,#66BB6A);box-shadow:0 6px 24px rgba(46,125,50,0.5)}
+.pause-label{position:fixed;bottom:85px;right:12px;z-index:1000;font-family:'Fredoka One',cursive;font-size:11px;color:white;text-shadow:1px 1px 3px rgba(0,0,0,0.5);display:none;text-align:center;width:76px}
+
+/* ── SPEECH BUBBLE ── */
+.speech-area{background:linear-gradient(135deg,#FFF8E1,#FFF3C4);border:3px solid #FFB300;border-radius:8px 20px 20px 20px;padding:16px 20px;margin-bottom:14px;min-height:70px;box-shadow:0 4px 16px rgba(255,179,0,0.3)}
+.speech-label{font-family:'Fredoka One',cursive;font-size:12px;color:#FF8F00;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.speech-text{font-size:clamp(14px,2.2vw,17px);color:#3E2723;font-weight:700;line-height:1.7}
+
+/* ── ACTIVITY CARD ── */
+.activity-card{background:rgba(255,255,255,0.95);border-radius:20px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-bottom:14px}
+.activity-title{font-family:'Fredoka One',cursive;font-size:clamp(15px,2.8vw,22px);color:#E65100;margin-bottom:16px;text-align:center;padding:8px 16px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:12px}
+
+/* ── MISS NUMBY AVATAR ── */
+.numby-container{text-align:center;margin:10px 0}
+.numby-avatar{width:120px;height:120px;border-radius:50%;border:4px solid #FFB300;box-shadow:0 4px 16px rgba(255,179,0,0.4);overflow:hidden;margin:0 auto;background:#FFF3E0}
+
+/* ── DEMO AREA ── */
+.demo-area{text-align:center;padding:16px;min-height:180px}
+@keyframes popIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.result-number{font-family:'Fredoka One',cursive;font-size:clamp(40px,10vw,70px);color:#2E7D32;animation:popIn 0.6s ease}
+
+/* ── COUNTING TRACK (buttons / number tiles) ── */
+.count-track{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:8px;margin:60px 0 8px;min-height:120px;position:relative;padding-top:50px}
+.button-tile{position:relative;width:clamp(52px,10vw,70px);height:clamp(52px,10vw,70px);border-radius:50%;background:radial-gradient(circle at 35% 30%,#A5D6A7,#66BB6A 70%,#388E3C);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(46,125,50,0.4),inset 0 -6px 10px rgba(0,0,0,0.15);transition:transform 0.25s,box-shadow 0.25s}
+.button-tile::before{content:"";position:absolute;top:10%;left:20%;width:35%;height:25%;background:rgba(255,255,255,0.35);border-radius:50%;filter:blur(2px)}
+.button-tile .tile-num{font-family:'Fredoka One',cursive;font-size:clamp(22px,4.5vw,32px);color:#FFF;text-shadow:2px 2px 0 #1B5E20,-1px -1px 0 #1B5E20;z-index:1}
+.button-tile.pending{opacity:0.35}
+.button-tile.current{transform:translateY(-8px) scale(1.15);box-shadow:0 8px 18px rgba(255,143,0,0.55);background:radial-gradient(circle at 35% 30%,#FFE082,#FFB300 70%,#E65100);animation:tileBounce 0.6s ease}
+.button-tile.current .tile-num{color:#FFF;text-shadow:2px 2px 0 #BF360C,-1px -1px 0 #BF360C}
+.button-tile.done{background:radial-gradient(circle at 35% 30%,#BBDEFB,#64B5F6 70%,#1976D2)}
+.button-tile.done .tile-num{color:#FFF;text-shadow:2px 2px 0 #0D47A1,-1px -1px 0 #0D47A1}
+.button-tile.fade-out{animation:tileFadeOut 0.5s forwards}
+@keyframes tileBounce{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.22)}100%{transform:translateY(-8px) scale(1.15)}}
+@keyframes tileFadeOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.6)}}
+
+/* ── LADYBUG ── */
+.ladybug{position:absolute;transition:left 0.4s cubic-bezier(.4,1.6,.6,1),bottom 0.4s cubic-bezier(.4,1.6,.6,1);pointer-events:none;font-size:clamp(30px,6vw,42px);filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));z-index:2;width:42px;text-align:center}
+
+/* ── BIG NUMBER DISPLAY (for reveal moments) ── */
+.big-number-wrap{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0}
+.big-number{font-family:'Fredoka One',cursive;font-size:clamp(64px,15vw,130px);color:#E65100;text-shadow:4px 4px 0 #FFF3E0,-2px -2px 0 #FFF3E0;line-height:1;animation:numberPop 0.5s ease;padding:8px 24px;background:#FFF8E1;border-radius:18px;border:4px solid #FFB300;box-shadow:0 6px 18px rgba(255,143,0,0.4)}
+@keyframes numberPop{0%{transform:scale(0) rotate(-15deg);opacity:0}60%{transform:scale(1.15) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+
+/* ── COUNT PROMPT (big sequence of numbers with blank-input boxes) ── */
+.seq-row{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+.seq-tile{font-family:'Fredoka One',cursive;font-size:clamp(32px,7vw,54px);padding:10px 16px;border-radius:14px;background:#FFF8E1;color:#E65100;border:4px solid #FFB300;box-shadow:0 4px 10px rgba(255,143,0,0.3);min-width:clamp(60px,12vw,90px);text-align:center}
+.seq-tile.blank{background:#FFFFFF;padding:0}
+.seq-input{font-family:'Fredoka One',cursive;font-size:clamp(32px,7vw,54px);width:clamp(60px,12vw,90px);height:clamp(60px,12vw,84px);text-align:center;border:4px dashed #E53935;border-radius:10px;background:#FFF5F5;color:#C62828;outline:none;transition:all 0.25s;-moz-appearance:textfield;padding:0}
+.seq-input::-webkit-outer-spin-button,.seq-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.seq-input:focus{border-color:#FF6F00;background:#FFF8E1;color:#E65100;transform:scale(1.05)}
+.seq-input.correct{border-style:solid;border-color:#43A047;background:#E8F5E9;color:#2E7D32;animation:numberPop 0.5s ease}
+.seq-input.wrong{border-color:#E53935;background:#FFCDD2;color:#C62828;animation:shake 0.5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.check-btn{display:block;margin:12px auto 0;padding:10px 30px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:clamp(16px,3vw,20px);color:white;cursor:pointer;background:linear-gradient(135deg,#43A047,#66BB6A);box-shadow:0 4px 12px rgba(67,160,71,0.4);transition:transform 0.2s}
+.check-btn:hover{transform:scale(1.05)}
+.check-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.direction-hint{text-align:center;font-family:'Fredoka One',cursive;color:#5D4037;font-size:clamp(13px,2.2vw,16px);margin-bottom:6px}
+.direction-hint .up{color:#2E7D32}
+.direction-hint .down{color:#C62828}
+
+/* ── QUIZ ROWS ── */
+.quiz-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:14px;transition:background 0.3s}
+.quiz-row.correct{background:linear-gradient(135deg,#E8F5E9,#C8E6C9)}
+.quiz-row.wrong{background:linear-gradient(135deg,#FFEBEE,#FFCDD2)}
+.quiz-num{font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,40px);color:#E65100;min-width:40px;text-align:center}
+.quiz-label{font-family:'Fredoka One',cursive;font-size:clamp(14px,2.5vw,18px);color:#FF8F00}
+.quiz-arrow{font-size:clamp(26px,5.5vw,38px);color:#E65100;font-weight:900;text-shadow:0 0 1px #E65100,1px 0 0 #E65100,-1px 0 0 #E65100,0 1px 0 #E65100,0 -1px 0 #E65100;line-height:1;display:inline-block;padding:0 2px}
+.quiz-input{width:clamp(55px,14vw,75px);height:clamp(55px,14vw,75px);border:3px dashed #FFA726;border-radius:14px;font-family:'Fredoka One',cursive;font-size:clamp(26px,5vw,38px);text-align:center;color:#E65100;background:white;outline:none;transition:all 0.3s}
+.quiz-input:focus{border-color:#FF6F00;background:#FFF8E1;transform:scale(1.05)}
+.quiz-input.correct{border-color:#43A047;background:#E8F5E9;color:#2E7D32}
+.quiz-input.wrong{border-color:#E53935;background:#FFEBEE;color:#C62828;animation:shake 0.4s ease}
+.quiz-input::-webkit-outer-spin-button,.quiz-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.quiz-input[type=number]{-moz-appearance:textfield}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}100%{transform:translateX(0)}}
+
+.go-btn{width:clamp(44px,11vw,55px);height:clamp(44px,11vw,55px);border:none;border-radius:12px;background:linear-gradient(135deg,#43A047,#66BB6A);color:white;font-family:'Fredoka One',cursive;font-size:clamp(14px,3vw,18px);cursor:pointer;box-shadow:0 3px 10px rgba(67,160,71,0.3);transition:transform 0.15s;flex-shrink:0}
+.go-btn:hover{transform:scale(1.08)}
+.go-btn:disabled{opacity:0.3;cursor:default;transform:none}
+.try-again-hint{font-family:'Fredoka One',cursive;font-size:12px;color:#E53935;margin-top:4px;text-align:center}
+
+/* ── RESULTS ── */
+.results-card{background:rgba(255,255,255,0.97);border-radius:20px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.1);text-align:center}
+.results-card h2{font-family:'Fredoka One',cursive;font-size:clamp(20px,4vw,28px);color:#E65100;margin-bottom:12px}
+.score-display{font-family:'Fredoka One',cursive;font-size:clamp(36px,8vw,56px);color:#2E7D32;margin:16px 0}
+.results-detail{text-align:left;margin:16px 0;font-size:clamp(13px,2vw,16px);font-weight:700;color:#4E342E;line-height:1.8}
+.result-correct{color:#2E7D32}
+.result-wrong{color:#C62828}
+
+/* ── FEEDBACK CARD ── */
+.feedback-card{background:rgba(255,255,255,0.97);border-radius:20px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:14px}
+.feedback-card h3{font-family:'Fredoka One',cursive;color:#E65100;font-size:18px;margin-bottom:14px;text-align:center}
+.fb-submit{display:block;margin:16px auto 0;padding:12px 40px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:16px;color:white;cursor:pointer;background:linear-gradient(135deg,#FF8F00,#FFB300);box-shadow:0 4px 16px rgba(255,179,0,0.4);transition:transform 0.2s}
+.fb-submit:hover{transform:scale(1.05)}
+
+/* ── START SCREEN ── */
+.start-screen{text-align:center;padding:20px}
+.start-btn{display:inline-block;margin-top:16px;padding:16px 48px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:clamp(18px,3.5vw,24px);color:white;cursor:pointer;background:linear-gradient(135deg,#FF8F00,#FFB300);box-shadow:0 6px 24px rgba(255,143,0,0.5);transition:transform 0.2s;animation:pulse 2s ease-in-out infinite}
+.start-btn:hover{transform:scale(1.08)}
+
+/* ── SCENE MANAGEMENT ── */
+.scene{display:none}
+.scene.active{display:block}
+
+/* ── CONFETTI ── */
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+@keyframes confFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+</style>
+<style>.driver-active .driver-overlay,.driver-active *{pointer-events:none}.driver-active .driver-active-element,.driver-active .driver-active-element *,.driver-popover,.driver-popover *{pointer-events:auto}@keyframes animate-fade-in{0%{opacity:0}to{opacity:1}}.driver-fade .driver-overlay{animation:animate-fade-in .2s ease-in-out}.driver-fade .driver-popover{animation:animate-fade-in .2s}.driver-popover{all:unset;box-sizing:border-box;color:#2d2d2d;margin:0;padding:15px;border-radius:5px;min-width:250px;max-width:300px;box-shadow:0 1px 10px rgba(0,0,0,.4);z-index:1000000000;position:fixed;top:0;right:0;background-color:#fff}.driver-popover *{font-family:Helvetica Neue,Inter,ui-sans-serif,"Apple Color Emoji",Helvetica,Arial,sans-serif}.driver-popover-title{font:19px/normal sans-serif;font-weight:700;display:block;position:relative;line-height:1.5;zoom:1;margin:0}.driver-popover-close-btn{all:unset;position:absolute;top:0;right:0;width:32px;height:28px;cursor:pointer;font-size:18px;font-weight:500;color:#d2d2d2;z-index:1;text-align:center;transition:color;transition-duration:.2s}.driver-popover-close-btn:hover,.driver-popover-close-btn:focus{color:#2d2d2d}.driver-popover-title[style*=block]+.driver-popover-description{margin-top:5px}.driver-popover-description{margin-bottom:0;font:14px/normal sans-serif;line-height:1.5;font-weight:400;zoom:1}.driver-popover-footer{margin-top:15px;text-align:right;zoom:1;display:flex;align-items:center;justify-content:space-between}.driver-popover-progress-text{font-size:13px;font-weight:400;color:#727272;zoom:1}.driver-popover-footer button{all:unset;display:inline-block;box-sizing:border-box;padding:3px 7px;text-decoration:none;text-shadow:1px 1px 0 #fff;background-color:#fff;color:#2d2d2d;font:12px/normal sans-serif;cursor:pointer;outline:0;zoom:1;line-height:1.3;border:1px solid #ccc;border-radius:3px}.driver-popover-footer .driver-popover-btn-disabled{opacity:.5;pointer-events:none}:not(body):has(>.driver-active-element){overflow:hidden !important}.driver-no-interaction,.driver-no-interaction *{pointer-events:none !important}.driver-popover-footer button:hover,.driver-popover-footer button:focus{background-color:#f7f7f7}.driver-popover-navigation-btns{display:flex;flex-grow:1;justify-content:flex-end}.driver-popover-navigation-btns button+button{margin-left:4px}.driver-popover-arrow{content:"";position:absolute;border:5px solid #fff}.driver-popover-arrow-side-over{display:none}.driver-popover-arrow-side-left{left:100%;border-right-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-right{right:100%;border-left-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-top{top:100%;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent}.driver-popover-arrow-side-bottom{bottom:100%;border-left-color:transparent;border-top-color:transparent;border-right-color:transparent}.driver-popover-arrow-side-center{display:none}.driver-popover-arrow-side-left.driver-popover-arrow-align-start,.driver-popover-arrow-side-right.driver-popover-arrow-align-start{top:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-start,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-start{left:15px}.driver-popover-arrow-align-end.driver-popover-arrow-side-left,.driver-popover-arrow-align-end.driver-popover-arrow-side-right{bottom:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-end,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-end{right:15px}.driver-popover-arrow-side-left.driver-popover-arrow-align-center,.driver-popover-arrow-side-right.driver-popover-arrow-align-center{top:50%;margin-top:-5px}.driver-popover-arrow-side-top.driver-popover-arrow-align-center,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-center{left:50%;margin-left:-5px}.driver-popover-arrow-none{display:none}</style></head>
+<body>
+
+<!-- Floating decorations -->
+<div class="float-deco" style="top:6%;left:4%;animation-delay:0s">🌈</div>
+<div class="float-deco" style="top:18%;right:6%;animation-delay:2s">🌟</div>
+<div class="float-deco" style="top:40%;left:3%;animation-delay:4s">🎈</div>
+<div class="float-deco" style="top:60%;right:5%;animation-delay:6s">🦋</div>
+<div class="float-deco" style="top:78%;left:8%;animation-delay:8s">🌻</div>
+<div class="float-deco" style="top:30%;right:10%;animation-delay:10s">🎯</div>
+
+<!-- PASSWORD SCREEN -->
+<div id="passwordScreen">
+  <div class="pw-card">
+    <div style="font-size:48px;margin-bottom:10px">🔒</div>
+    <h2>Akili Learning</h2>
+    <p>Grade 1 — Counting</p>
+    <input type="password" class="pw-input" id="pwInput" placeholder="Password" maxlength="20" autocomplete="off">
+    <button class="pw-btn" onclick="checkPassword()">Enter</button>
+    <div class="pw-error" id="pwError"></div>
+  </div>
+</div>
+
+<!-- PAUSE BUTTON -->
+<button id="pauseBtn" onclick="togglePause()">⏸️</button>
+<div class="pause-label" id="pauseLabel">Pause</div>
+
+<div id="app">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Counting with Miss Numby!</h1>
+    <p>Practise counting forwards and backwards from any number!</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- SPEECH BUBBLE -->
+  <div class="speech-area">
+    <div class="speech-label">Miss Numby says:</div>
+    <div class="speech-text" id="speechText">Getting ready...</div>
+  </div>
+
+  <!-- ═══ SCENE: START ═══ -->
+  <div class="scene active" id="scene-start">
+    <div class="activity-card start-screen">
+      <div class="numby-container">
+        <svg class="numby-avatar" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- Curly red hair back layer (puffy shape) -->
+          <circle cx="60" cy="50" r="40" fill="#D84315"></circle>
+          <circle cx="28" cy="55" r="14" fill="#D84315"></circle>
+          <circle cx="92" cy="55" r="14" fill="#D84315"></circle>
+          <circle cx="24" cy="72" r="11" fill="#D84315"></circle>
+          <circle cx="96" cy="72" r="11" fill="#D84315"></circle>
+          <circle cx="36" cy="28" r="11" fill="#D84315"></circle>
+          <circle cx="60" cy="22" r="12" fill="#D84315"></circle>
+          <circle cx="84" cy="28" r="11" fill="#D84315"></circle>
+          <!-- Face -->
+          <ellipse cx="60" cy="62" rx="28" ry="30" fill="#FFE0B2"></ellipse>
+          <!-- Freckles -->
+          <circle cx="48" cy="70" r="1" fill="#BF360C"></circle>
+          <circle cx="52" cy="72" r="1" fill="#BF360C"></circle>
+          <circle cx="68" cy="72" r="1" fill="#BF360C"></circle>
+          <circle cx="72" cy="70" r="1" fill="#BF360C"></circle>
+          <circle cx="60" cy="74" r="1" fill="#BF360C"></circle>
+          <!-- Round glasses (green frames) -->
+          <circle cx="49" cy="60" r="9" fill="rgba(255,255,255,0.3)" stroke="#2E7D32" stroke-width="2.5"></circle>
+          <circle cx="71" cy="60" r="9" fill="rgba(255,255,255,0.3)" stroke="#2E7D32" stroke-width="2.5"></circle>
+          <line x1="58" y1="60" x2="62" y2="60" stroke="#2E7D32" stroke-width="2"></line>
+          <!-- Eyes behind glasses -->
+          <circle cx="49" cy="60" r="3" fill="#1B5E20"></circle>
+          <circle cx="71" cy="60" r="3" fill="#1B5E20"></circle>
+          <circle cx="50" cy="59" r="1" fill="white"></circle>
+          <circle cx="72" cy="59" r="1" fill="white"></circle>
+          <!-- Smile -->
+          <path d="M48,80 Q60,90 72,80" stroke="#BF360C" stroke-width="2.5" fill="#EF5350" stroke-linecap="round"></path>
+          <path d="M51,82 Q60,85 69,82" stroke="white" stroke-width="1.5" fill="none"></path>
+          <!-- Cheeks -->
+          <circle cx="36" cy="74" r="5" fill="#FFAB91" opacity="0.6"></circle>
+          <circle cx="84" cy="74" r="5" fill="#FFAB91" opacity="0.6"></circle>
+          <!-- Curly bangs on top -->
+          <path d="M32,45 Q40,32 48,40 Q56,30 60,38 Q64,30 72,40 Q80,32 88,45" stroke="#D84315" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <!-- Teal dress/top with white collar and yellow buttons -->
+          <path d="M32,96 Q60,92 88,96 Q92,106 88,118 L32,118 Q28,106 32,96Z" fill="#00ACC1"></path>
+          <path d="M46,96 L60,103 L74,96 L70,110 L50,110 Z" fill="white" stroke="#00838F" stroke-width="1.2"></path>
+          <circle cx="60" cy="108" r="2" fill="#FFEB3B" stroke="#F9A825" stroke-width="0.6"></circle>
+          <circle cx="60" cy="115" r="2" fill="#FFEB3B" stroke="#F9A825" stroke-width="0.6"></circle>
+        </svg>
+      </div>
+      <h2 style="font-family:&#39;Fredoka One&#39;,cursive;color:#E65100;font-size:clamp(18px,3.5vw,24px);margin-top:10px">
+        I'm Miss Numby!
+      </h2>
+      <p style="font-weight:700;color:#5D4037;margin-top:10px;font-size:clamp(13px,2.2vw,16px);line-height:1.6">
+        Today we are going to practise<br><strong style="color:#E65100;font-size:1.2em">COUNTING!</strong><br>
+        Forwards and backwards, 0 to 20.<br>
+        Mommy or Daddy, please sit with your child.
+      </p>
+      <button class="start-btn" id="startBtn" onclick="beginLesson()">
+        Let's Start!
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: DEMO ═══ -->
+  <div class="scene" id="scene-demo">
+    <div class="activity-card">
+      <div class="activity-title" id="demoTitle">Let's Count!</div>
+      <div class="demo-area" id="demoArea"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: YOUR TURN ═══ -->
+  <div class="scene" id="scene-quiz">
+    <div class="activity-card">
+      <div class="activity-title">Your Turn!</div>
+      <p style="text-align:center;font-weight:700;color:#5D4037;margin-bottom:14px;font-size:clamp(12px,2vw,14px)">
+        Fill in the missing numbers. Press Check when you are ready!
+      </p>
+      <div id="quizRows"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: RESULTS ═══ -->
+  <div class="scene" id="scene-results">
+    <div class="results-card">
+      <h2>Well done! You finished!</h2>
+      <div class="score-display" id="scoreDisplay"></div>
+      <div class="results-detail" id="resultsDetail"></div>
+      <div id="parentMessage" style="margin-top:18px;padding:16px;background:#FFF8E1;border-radius:14px;border:2px solid #FFB300;text-align:left;font-size:clamp(12px,2vw,15px);font-weight:700;color:#5D4037;line-height:1.7"></div>
+    </div>
+
+    <!-- FEEDBACK FORM -->
+    <div class="feedback-card">
+      <h3>Please Complete the Feedback Form</h3>
+      <p style="text-align:center;font-weight:700;color:#5D4037;font-size:14px;line-height:1.6;margin-bottom:16px">
+        Your feedback helps us improve Akili Learning.<br>The form takes about 1 minute.
+      </p>
+      <button class="fb-submit" onclick="openFeedbackForm()">Open Feedback Form</button>
+      <p style="text-align:center;font-weight:700;color:#888;font-size:11px;margin-top:12px">Opens in a new tab</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// PASSWORD
+// ══════════════════════════════════════════════════════
+const MONTHLY_PASSWORD = "bpd04";
+
+function checkPassword(){
+  const input = document.getElementById('pwInput').value.trim().toLowerCase();
+  if(input === MONTHLY_PASSWORD){
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initAfterPassword();
+  } else {
+    document.getElementById('pwError').textContent = 'Incorrect password. Please try again.';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
+  document.getElementById('pwInput').focus();
+});
+
+// ══════════════════════════════════════════════════════
+// FEEDBACK
+// ══════════════════════════════════════════════════════
+const FEEDBACK_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSemC5qB2ZsXff2tgfoZMYzE0MfcZwiUQNfiY0gveCGDHvD_RA/viewform";
+function openFeedbackForm(){ window.open(FEEDBACK_FORM_URL, '_blank'); }
+
+// ══════════════════════════════════════════════════════
+// SPEECH SYNTHESIS
+// ══════════════════════════════════════════════════════
+let voices = [];
+let selectedVoice = null;
+
+function loadVoices(){
+  return new Promise(resolve => {
+    const load = () => {
+      voices = speechSynthesis.getVoices();
+      const prefs = [
+        v => /samantha/i.test(v.name),
+        v => /fiona/i.test(v.name),
+        v => /karen/i.test(v.name),
+        v => /victoria/i.test(v.name),
+        v => /zira/i.test(v.name),
+        v => /hazel/i.test(v.name),
+        v => /female/i.test(v.name) && /en/i.test(v.lang),
+        v => /en[-_](gb|us|za|au)/i.test(v.lang) && !/male/i.test(v.name),
+        v => /en/i.test(v.lang)
+      ];
+      for(const fn of prefs){
+        const found = voices.find(fn);
+        if(found){selectedVoice=found;break;}
+      }
+      resolve();
+    };
+    if(speechSynthesis.getVoices().length) load();
+    else speechSynthesis.onvoiceschanged = load;
+    setTimeout(resolve, 2000);
+  });
+}
+
+function speak(text, rate=0.78){
+  return new Promise(resolve => {
+    speechSynthesis.cancel();
+    setTimeout(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      if(selectedVoice) u.voice = selectedVoice;
+      u.rate = rate;
+      u.pitch = 1.2;
+      u.volume = 1;
+      const keepAlive = setInterval(() => {
+        if(!speechSynthesis.speaking){clearInterval(keepAlive);return;}
+        speechSynthesis.pause();speechSynthesis.resume();
+      }, 5000);
+      u.onend = () => {clearInterval(keepAlive);setTimeout(resolve,300)};
+      u.onerror = () => {clearInterval(keepAlive);setTimeout(resolve,300)};
+      speechSynthesis.speak(u);
+    }, 50);
+  });
+}
+
+function setBubble(text){ document.getElementById('speechText').textContent = text; }
+
+async function sayAndShow(text, rate=0.78){
+  await waitIfPaused();
+  setBubble(text);
+  await speak(text, rate);
+  await waitIfPaused();
+}
+
+// ══════════════════════════════════════════════════════
+// PAUSE / PLAY SYSTEM
+// ══════════════════════════════════════════════════════
+let isPaused = false;
+let pauseResolve = null;
+
+function togglePause(){
+  const btn = document.getElementById('pauseBtn');
+  const label = document.getElementById('pauseLabel');
+  if(isPaused){
+    isPaused = false;
+    btn.textContent = '⏸️';
+    btn.classList.remove('paused');
+    label.textContent = 'Pause';
+    speechSynthesis.resume();
+    if(pauseResolve){ pauseResolve(); pauseResolve = null; }
+  } else {
+    isPaused = true;
+    btn.textContent = '▶️';
+    btn.classList.add('paused');
+    label.textContent = 'Play';
+    speechSynthesis.pause();
+  }
+}
+
+function waitIfPaused(){
+  if(!isPaused) return Promise.resolve();
+  return new Promise(resolve => { pauseResolve = resolve; });
+}
+
+function sleep(ms){
+  return new Promise(resolve => {
+    let elapsed = 0;
+    const step = 100;
+    const tick = () => {
+      if(isPaused){
+        waitIfPaused().then(tick);
+        return;
+      }
+      elapsed += step;
+      if(elapsed >= ms) resolve();
+      else setTimeout(tick, step);
+    };
+    setTimeout(tick, step);
+  });
+}
+
+function setProgress(pct){ document.getElementById('progressBar').style.width = pct+'%'; }
+
+function showScene(id){
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scene-'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════
+// SOUNDS
+// ══════════════════════════════════════════════════════
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function initAudio(){if(!audioCtx)audioCtx=new AudioCtx();}
+
+function playDing(){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.connect(g);g.connect(audioCtx.destination);
+  o.frequency.setValueAtTime(880,audioCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(1320,audioCtx.currentTime+0.1);
+  g.gain.setValueAtTime(0.3,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.4);
+  o.start();o.stop(audioCtx.currentTime+0.4);
+}
+
+function playBuzz(){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.connect(g);g.connect(audioCtx.destination);o.type='square';
+  o.frequency.setValueAtTime(180,audioCtx.currentTime);
+  g.gain.setValueAtTime(0.2,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.3);
+  o.start();o.stop(audioCtx.currentTime+0.3);
+}
+
+function playTada(){
+  if(!audioCtx)return;
+  [523,659,784,1047].forEach((f,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);o.frequency.value=f;
+    g.gain.setValueAtTime(0,audioCtx.currentTime+i*0.12);
+    g.gain.linearRampToValueAtTime(0.25,audioCtx.currentTime+i*0.12+0.05);
+    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+i*0.12+0.5);
+    o.start(audioCtx.currentTime+i*0.12);o.stop(audioCtx.currentTime+i*0.12+0.5);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// COUNTING LESSON DATA
+// ══════════════════════════════════════════════════════
+const FORWARD_ROUNDS = [
+  {start: 3,  count: 6},   // 3 → 9
+  {start: 7,  count: 6},   // 7 → 13
+  {start: 14, count: 6}    // 14 → 20 (edge)
+];
+const BACKWARD_ROUNDS = [
+  {start: 10, count: 6},   // 10 → 4
+  {start: 17, count: 6},   // 17 → 12
+  {start: 20, count: 6}    // 20 → 14 (edge)
+];
+const YOUR_TURN_ROUNDS = [
+  // Each: display is an array with null for blanks; direction is 'up' or 'down' for narration.
+  // sequence 1: 5, _, 7, _, 9, _  → counting on by 1
+  {direction: 'up',   display: [5, null, 7, null, 9, null],      full: [5, 6, 7, 8, 9, 10]},
+  // sequence 2: 8, 9, _, _, _, 13
+  {direction: 'up',   display: [8, 9, null, null, null, 13],     full: [8, 9, 10, 11, 12, 13]},
+  // sequence 3: 17, 16, _, _, 13, _  → counting back by 1
+  {direction: 'down', display: [17, 16, null, null, 13, null],   full: [17, 16, 15, 14, 13, 12]},
+  // sequence 4: _, 18, 17, _, _, 14
+  {direction: 'down', display: [null, 18, 17, null, null, 14],   full: [19, 18, 17, 16, 15, 14]},
+  // sequence 5: _, 8, 9, _, _, _
+  {direction: 'up',   display: [null, 8, 9, null, null, null],   full: [7, 8, 9, 10, 11, 12]},
+  // sequence 6: 15, _, 13, _, _, 10
+  {direction: 'down', display: [15, null, 13, null, null, 10],   full: [15, 14, 13, 12, 11, 10]}
+];
+
+const results = [];
+let totalCorrect = 0;
+const totalQuestions = YOUR_TURN_ROUNDS.length;
+
+// ══════════════════════════════════════════════════════
+// COUNTING TRACK RENDERERS
+// ══════════════════════════════════════════════════════
+function renderTrack(nums){
+  let html = '<div class="count-track" id="countTrack">';
+  nums.forEach((n, i) => {
+    html += `<div class="button-tile pending" data-idx="${i}"><span class="tile-num">${n}</span></div>`;
+  });
+  html += '<div class="ladybug" id="ladybug">🐞</div>';
+  html += '</div>';
+  return html;
+}
+function positionLadybug(idx, instant=false){
+  const track = document.getElementById('countTrack');
+  const bug = document.getElementById('ladybug');
+  if(!track || !bug) return;
+  const tile = track.querySelector(`[data-idx="${idx}"]`);
+  if(!tile) return;
+  const trackRect = track.getBoundingClientRect();
+  const tileRect = tile.getBoundingClientRect();
+  const centerX = (tileRect.left - trackRect.left) + (tileRect.width / 2) - (bug.offsetWidth / 2 || 20);
+  const bottomPx = (track.clientHeight - (tileRect.top - trackRect.top)) + 4;
+  if(instant){
+    bug.style.transition = 'none';
+    bug.style.left = centerX + 'px';
+    bug.style.bottom = bottomPx + 'px';
+    // Force reflow so the next transition takes effect smoothly
+    void bug.offsetWidth;
+    bug.style.transition = '';
+  } else {
+    bug.style.left = centerX + 'px';
+    bug.style.bottom = bottomPx + 'px';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// BIG NUMBER REVEAL (centre-of-screen pop)
+// ══════════════════════════════════════════════════════
+function showBigNumber(container, n, color){
+  const c = typeof container === 'string' ? document.getElementById(container) : container;
+  c.innerHTML = `<div class="big-number-wrap"><div class="big-number" style="color:${color || '#E65100'}">${n}</div></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// COUNT FORWARD / BACKWARD RUNNER
+// ══════════════════════════════════════════════════════
+async function runCountRound(start, count, direction){
+  // Build sequence
+  const nums = [];
+  for(let i = 0; i < count; i++){
+    nums.push(direction === 'forward' ? start + i : start - i);
+  }
+  // Render track ONCE per round — ladybug DOM persists across steps.
+  document.getElementById('demoArea').innerHTML = renderTrack(nums);
+  await sleep(40);
+  // Place the ladybug instantly above the first button (no fly-in from the left).
+  positionLadybug(0, /*instant*/true);
+  await sleep(60);
+
+  for(let i = 0; i < nums.length; i++){
+    await waitIfPaused();
+    // Update tile states in-place (no innerHTML rebuild → ladybug keeps its position).
+    const tiles = document.querySelectorAll('#countTrack .button-tile');
+    tiles.forEach((t, j) => {
+      t.classList.remove('pending', 'current', 'done', 'fade-out');
+      if(j < i){
+        t.classList.add(direction === 'backward' ? 'fade-out' : 'done');
+      } else if(j === i){
+        t.classList.add('current');
+      } else {
+        t.classList.add('pending');
+      }
+    });
+    positionLadybug(i);    // smooth CSS hop from previous tile to this one
+    playDing();
+    await speak(String(nums[i]), 0.85);
+    await sleep(220);
+  }
+  // Final: mark all tiles as done/faded (no ladybug reset).
+  const tilesFinal = document.querySelectorAll('#countTrack .button-tile');
+  tilesFinal.forEach((t, j) => {
+    t.classList.remove('pending', 'current');
+    if(direction === 'backward' && j < nums.length - 1) t.classList.add('fade-out');
+    else t.classList.add('done');
+  });
+  await sleep(500);
+}
+
+
+
+// ══════════════════════════════════════════════════════
+// YOUR TURN — fill-in-the-blank number sequences
+// ══════════════════════════════════════════════════════
+function buildQuizRows(){
+  const c = document.getElementById('quizRows');
+  c.innerHTML = '';
+  YOUR_TURN_ROUNDS.forEach((round, i) => {
+    const row = document.createElement('div');
+    row.className = 'quiz-row';
+    row.id = 'quiz-row-'+i;
+    row.style.flexDirection = 'column';
+    row.style.alignItems = 'stretch';
+
+    const dirLbl = round.direction === 'up'
+      ? 'Are the numbers getting bigger? Count <span class="up">ON ↑</span>'
+      : 'Are the numbers getting smaller? Count <span class="down">BACK ↓</span>';
+
+    let seqHTML = '<div class="seq-row" id="seq-'+i+'">';
+    round.display.forEach((n, idx) => {
+      if(n === null){
+        seqHTML += `<input type="number" class="seq-input" data-round="${i}" data-idx="${idx}" inputmode="numeric" maxlength="2" autocomplete="off">`;
+      } else {
+        seqHTML += `<div class="seq-tile">${n}</div>`;
+      }
+    });
+    seqHTML += '</div>';
+    row.innerHTML = `
+      <p class="direction-hint">Round ${i+1}: ${dirLbl}</p>
+      ${seqHTML}
+      <button class="check-btn" id="check-btn-${i}">Check!</button>
+    `;
+    c.appendChild(row);
+  });
+
+  // Auto-advance focus when a digit is typed
+  document.querySelectorAll('.seq-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      if(inp.value.length >= 2 || parseInt(inp.value) > 9){
+        const next = inp.parentElement.querySelectorAll('.seq-input');
+        for(let k = 0; k < next.length; k++){
+          if(next[k] === inp){
+            if(next[k+1] && !next[k+1].disabled) next[k+1].focus();
+            break;
+          }
+        }
+      }
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        const btn = document.getElementById('check-btn-' + inp.dataset.round);
+        if(btn && !btn.disabled) btn.click();
+      }
+    });
+  });
+}
+
+async function runYourTurn(){
+  for(let i = 0; i < YOUR_TURN_ROUNDS.length; i++){
+    const round = YOUR_TURN_ROUNDS[i];
+    await waitIfPaused();
+
+    // Scroll the row into view so the child sees which one is active
+    const rowEl = document.getElementById('quiz-row-'+i);
+    if(rowEl) rowEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+    await sleep(300);
+
+    // Narration — mention the direction
+    const dirWord = round.direction === 'up' ? 'counting ON' : 'counting BACK';
+    setBubble(`Round ${i+1}. Look at the numbers — are you ${dirWord}?`);
+    await speak(`Round ${i+1}. Are you ${dirWord}?`, 0.8);
+
+    // Focus the first blank
+    const firstBlank = rowEl.querySelector('.seq-input:not([disabled])');
+    if(firstBlank) firstBlank.focus();
+
+    // Wait for the child to complete this row (all blanks correct)
+    await new Promise(resolve => {
+      const btn = document.getElementById('check-btn-' + i);
+      const inputs = rowEl.querySelectorAll('.seq-input');
+
+      const checkAll = () => {
+        let allCorrect = true;
+        let anyEmpty = false;
+        let wrongCount = 0;
+
+        inputs.forEach(inp => {
+          if(inp.disabled) return; // already locked correct
+          const val = inp.value.trim();
+          if(val === ''){ anyEmpty = true; allCorrect = false; return; }
+          const numVal = parseInt(val);
+          const idx = parseInt(inp.dataset.idx);
+          const expected = round.full[idx];
+          inp.classList.remove('wrong','correct');
+          // Force reflow so animation can replay
+          void inp.offsetWidth;
+          if(numVal === expected){
+            inp.classList.add('correct');
+            inp.disabled = true;
+          } else {
+            inp.classList.add('wrong');
+            wrongCount++;
+            allCorrect = false;
+            // Clear wrong values after a short delay so child can retype
+            setTimeout(() => {
+              if(!inp.disabled){
+                inp.value = '';
+                inp.classList.remove('wrong');
+              }
+            }, 900);
+          }
+        });
+
+        if(allCorrect){
+          btn.disabled = true;
+          btn.textContent = '✓ Done!';
+          playTada();
+          miniConfetti();
+          sayAndShow(`Well done! You finished round ${i+1}!`).then(() => {
+            results.push({round: i+1, direction: round.direction, full: round.full});
+            totalCorrect++;
+            setTimeout(resolve, 400);
+          });
+        } else if(anyEmpty && wrongCount === 0){
+          // Some blanks still empty — no buzz, gentle nudge
+          playBuzz();
+          sayAndShow(`Please fill in all the boxes.`);
+          // Refocus first empty
+          for(const inp of inputs){
+            if(!inp.disabled && inp.value.trim() === ''){ inp.focus(); break; }
+          }
+        } else {
+          playBuzz();
+          sayAndShow(`Oops — try the red boxes again!`);
+          // Refocus first wrong/empty after flash
+          setTimeout(() => {
+            for(const inp of inputs){
+              if(!inp.disabled && !inp.classList.contains('correct')){
+                inp.value = '';
+                inp.focus();
+                break;
+              }
+            }
+          }, 950);
+        }
+      };
+
+      btn.onclick = checkAll;
+    });
+    await sleep(500);
+  }
+}
+
+// Tiny confetti burst (different from the end-of-lesson full confetti)
+function miniConfetti(){
+  const cols=['#FF8F00','#66BB6A','#42A5F5','#EF5350','#AB47BC','#FFD54F'];
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:5000;overflow:hidden';
+  document.body.appendChild(wrap);
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div');p.style.cssText=`
+      position:absolute;left:${40+Math.random()*20}%;top:${40+Math.random()*15}%;
+      width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;
+      background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'3px'};
+      animation:confFall ${1.2+Math.random()*0.8}s ease-out ${Math.random()*0.3}s forwards;
+    `;wrap.appendChild(p);
+  }
+  setTimeout(()=>wrap.remove(),2500);
+}
+
+// ══════════════════════════════════════════════════════
+// MAIN LESSON FLOW
+// ══════════════════════════════════════════════════════
+async function beginLesson(){
+  initAudio();
+  await loadVoices();
+
+  document.getElementById('pauseBtn').style.display = 'block';
+  document.getElementById('pauseLabel').style.display = 'block';
+
+  // ─── INTRO ───
+  await sayAndShow("Hello, eager learners! I am Miss Numby. Today we are going to practise counting forwards and backwards. Are you ready? Let's go!");
+  await sleep(300);
+
+  await sayAndShow("Mommy or Daddy, please sit with your child. Press the pause button any time you need more time. Count along with us!");
+  await sleep(300);
+
+  showScene('demo');
+  setProgress(5);
+
+  // ─── COUNT FORWARD ───
+  document.getElementById('demoTitle').textContent = "Count Forwards";
+  await sayAndShow("Let's count forwards! Watch the little ladybug hop from one button to the next, and count out loud with me!");
+  await sleep(200);
+
+  for(let r = 0; r < FORWARD_ROUNDS.length; r++){
+    const round = FORWARD_ROUNDS[r];
+    setProgress(10 + r*12);
+    await waitIfPaused();
+    await sayAndShow(`Let's start at ${round.start}. Count on with me!`);
+    await runCountRound(round.start, round.count, 'forward');
+    await sayAndShow(`Great counting from ${round.start}!`);
+    await sleep(150);
+  }
+
+  // ─── COUNT BACKWARD ───
+  setProgress(50);
+  document.getElementById('demoTitle').textContent = "Count Backwards";
+  await sayAndShow("Now let's count back! When we count back, the numbers get smaller.");
+  await sleep(200);
+
+  for(let r = 0; r < BACKWARD_ROUNDS.length; r++){
+    const round = BACKWARD_ROUNDS[r];
+    setProgress(55 + r*10);
+    await waitIfPaused();
+    await sayAndShow(`Starting at ${round.start}. Count back with me!`);
+    await runCountRound(round.start, round.count, 'backward');
+    await sayAndShow(`Well done, counting back from ${round.start}!`);
+    await sleep(150);
+  }
+
+  // ─── YOUR TURN ───
+  setProgress(85);
+  showScene('quiz');
+  buildQuizRows();
+  await sleep(300);
+
+  await sayAndShow("Your turn, superstar! Look carefully at the numbers I give you. If they are getting BIGGER, you must count ON. If they are getting SMALLER, you must count BACK.");
+  await sleep(400);
+
+  await sayAndShow("Type the missing numbers into the red boxes, then press Check. If a box turns red, try again!");
+  await sleep(300);
+
+  await runYourTurn();
+
+  // ─── CLOSING / RESULTS ───
+  setProgress(100);
+  showScene('results');
+  showResults();
+  playTada();
+  launchConfetti();
+
+  document.getElementById('pauseBtn').style.display = 'none';
+  document.getElementById('pauseLabel').style.display = 'none';
+
+  await sayAndShow("Amazing counting, superstar! Keep practising — you are getting better every day! See you next time!");
+  await sleep(2000);
+}
+
+// ══════════════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════════════
+function showResults(){
+  const pct = Math.round((totalCorrect / totalQuestions) * 100);
+  document.getElementById('scoreDisplay').textContent = `${totalCorrect} / ${totalQuestions} rounds completed`;
+
+  let html = '<p style="font-family:Fredoka One,cursive;color:#E65100;margin-top:8px">Counting rounds:</p>';
+  results.forEach(r => {
+    const seqShown = r.full.join(', ');
+    const dir = r.direction === 'up' ? 'counting on' : 'counting back';
+    html += `<p class="result-correct">✅ Round ${r.round} (${dir}): ${seqShown} — well done!</p>`;
+  });
+  document.getElementById('resultsDetail').innerHTML = html;
+
+  const parentMsg = `<p><strong>Dear Parent,</strong></p>
+    <p style="margin-top:6px">Your child has practised counting forwards and backwards from numbers between 0 and 20. This is a key foundation for addition, subtraction, and number sense in Grade 1.</p>
+    <p style="margin-top:6px">Keep practising in everyday moments — count steps on the stairs going up, then count them going down. Count pegs into the peg bag, then back out. Count how many grapes are on the plate, and how many are left after each one is eaten.</p>
+    <p style="margin-top:6px">Thank you for supporting your child's learning!</p>`;
+  document.getElementById('parentMessage').innerHTML = parentMsg;
+}
+
+// ══════════════════════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════════════════════
+function launchConfetti(){
+  const cols=['#FF8F00','#66BB6A','#42A5F5','#EF5350','#AB47BC','#FFD54F','#EC407A'];
+  const wrap=document.createElement('div');wrap.className='confetti-wrap';
+  document.body.appendChild(wrap);
+  for(let i=0;i<65;i++){
+    const p=document.createElement('div');p.style.cssText=`
+      position:absolute;left:${Math.random()*100}%;top:-20px;
+      width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;
+      background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'3px'};
+      animation:confFall ${2+Math.random()*2}s linear ${Math.random()*1.5}s forwards;
+    `;wrap.appendChild(p);
+  }
+  setTimeout(()=>wrap.remove(),5500);
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+async function initAfterPassword(){
+  await loadVoices();
+  setBubble("Hello! Press 'Let's Start' when you are ready!");
+  await speak("Hello! Press Let's Start when you are ready!", 0.78);
+}
+</script>
+
+
+<div id="screenity-ui"><div class="screenity-shadow-dom"><div><div class="screenity-scrollbar"></div><div class="screenity-scrollbar"></div></div><style type="text/css">
+			#screenity-ui, #screenity-ui div {
+				background-color: unset;
+				padding: unset;
+				width: unset;
+				box-shadow: unset;
+				display: unset;
+				margin: unset;
+				border-radius: unset;
+			}
+			.screenity-outline {
+				position: absolute;
+				z-index: 99999999999;
+				border: 2px solid #3080F8;
+				outline-offset: -2px;
+				pointer-events: none;
+				border-radius: 5px!important;
+			}
+		.screenity-blur {
+			filter: blur(10px)!important;
+		}
+			.screenity-shadow-dom * {
+				transition: unset;
+			}
+			.screenity-shadow-dom .TooltipContent {
+  border-radius: 30px!important;
+	background-color: #29292F!important;
+  padding: 10px 15px!important;
+  font-size: 12px;
+	margin-bottom: 10px!important;
+	bottom: 100px;
+  line-height: 1;
+	font-family: 'Satoshi-Medium', sans-serif;
+	z-index: 99999999!important;
+  color: #FFF;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px!important;
+  user-select: none;
+	transition: opacity 0.3 ease-in-out;
+  will-change: transform, opacity;
+	animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.screenity-shadow-dom .hide-tooltip {
+	display: none!important;
+}
+
+.screenity-shadow-dom .tooltip-tall {
+	margin-bottom: 20px;
+}
+
+.screenity-shadow-dom .tooltip-small {
+	margin-bottom: 5px;
+}
+
+.screenity-shadow-dom .TooltipContent[data-state='delayed-open'][data-side='top'] {
+	animation-name: screenity-slideDownAndFade;
+}
+.screenity-shadow-dom .TooltipContent[data-state='delayed-open'][data-side='right'] {
+  animation-name: screenity-slideLeftAndFade;
+}
+.screenity-shadow-dom.TooltipContent[data-state='delayed-open'][data-side='bottom'] {
+  animation-name: screenity-slideUpAndFade;
+}
+.screenity-shadow-dom.TooltipContent[data-state='delayed-open'][data-side='left'] {
+  animation-name: screenity-slideRightAndFade;
+}
+
+@keyframes screenity-slideUpAndFade {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes screenity-slideRightAndFade {
+  from { opacity: 0; transform: translateX(-2px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes screenity-slideDownAndFade {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes screenity-slideLeftAndFade {
+  from { opacity: 0; transform: translateX(2px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+#screenity-ui [data-radix-popper-content-wrapper] { z-index: 999999999999!important; }
+
+.screenity-shadow-dom .CanvasContainer {
+	position: fixed;
+	pointer-events: all!important;
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999!important;
+}
+.screenity-shadow-dom .canvas {
+	position: fixed;
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999!important;
+	background: transparent!important;
+}
+.screenity-shadow-dom .canvas-container {
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999;
+	position: fixed!important;
+	background: transparent!important;
+}
+
+.ScreenityDropdownMenuContent {
+	z-index: 99999999999!important;
+  min-width: 200px;
+  background-color: white;
+  margin-top: 4px;
+  margin-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 15px;
+  font-family: 'Satoshi-Medium', sans-serif;
+  color: #29292F;
+  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.ScreenityDropdownMenuContent[data-side="top"] {
+  animation-name: screenity-slideDownAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="right"] {
+  animation-name: screenity-slideLeftAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="bottom"] {
+  animation-name: screenity-slideUpAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="left"] {
+  animation-name: screenity-slideRightAndFade;
+}
+.ScreenityItemIndicator {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  background: #3080F8;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ScreenityDropdownMenuItem,
+.ScreenityDropdownMenuRadioItem {
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 22px;
+  padding-right: 22px;
+  user-select: none;
+  outline: none;
+}
+.ScreenityDropdownMenuItem:hover {
+    background-color: #F6F7FB !important;
+    cursor: pointer;
+}
+.ScreenityDropdownMenuItem[data-disabled] {
+  color: #6E7684 !important;
+  cursor: not-allowed;
+  background-color: #F6F7FB !important;
+}
+
+</style></div></div></body></html>
